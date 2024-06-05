@@ -11,19 +11,23 @@ Player::~Player()
     // cout << "Player destructor called for " << name_ << endl;
 }
 
-Vertex* findMutualVertex(const Hexigon& h1, const Hexigon& h2, const Hexigon& h3) {
-    for (Vertex* v1 : h1.getVerticesList()) {
-        for (Vertex* v2 : h2.getVerticesList()) {
-            for (Vertex* v3 : h3.getVerticesList()) {
-                if (v1 == v2 && v2 == v3 && v1 == v3) {
-                    return v1;  // Found the mutual vertex
+Vertex *findMutualVertex(const Hexigon &h1, const Hexigon &h2, const Hexigon &h3)
+{
+    for (Vertex *v1 : h1.getVerticesList())
+    {
+        for (Vertex *v2 : h2.getVerticesList())
+        {
+            for (Vertex *v3 : h3.getVerticesList())
+            {
+                if (v1 == v2 && v2 == v3 && v1 == v3)
+                {
+                    return v1; // Found the mutual vertex
                 }
             }
         }
     }
-    return nullptr;  // No mutual vertex found
+    return nullptr; // No mutual vertex found
 }
-
 
 Hexigon *findHexigon(const std::vector<Hexigon *> &hexigonList, ResourceType resourceType, int itemNum)
 {
@@ -183,9 +187,12 @@ void Player::placeSettelemnt(vector<ResourceType> resourseTypes, vector<int> ite
 
     cout << "Settlement placed at vertex: " << mutualVertex->getId() << endl;
 }
-bool Player::hasRequiredResources(const std::vector<ResourceType>& resources) {
-    for (auto& resource : resources) {
-        if (getResorceCount(resource) == 0) return false;
+bool Player::hasRequiredResources(const std::vector<ResourceType> &resources)
+{
+    for (auto &resource : resources)
+    {
+        if (getResorceCount(resource) == 0)
+            return false;
     }
     return true;
 }
@@ -274,22 +281,67 @@ void Player::placeRoad(vector<ResourceType> resourceTypes, vector<int> itemNum, 
     resourceCards_[ResourceType::BRICK]--;
     cout << "Road built by " << this->getPlayerName() << " at edge: (" << edge->getV1()->getId() << "," << edge->getV2()->getId() << ")" << endl;
 }
-
-void Player::rollDice(Board *board)
+int Player::totalResources() const
+{
+    int total = 0;
+    for (const auto &resourcePair : resourceCards_)
+    {
+        total += resourcePair.second; // resourcePair.second is the count of each resource type
+    }
+    return total;
+}
+void Player::rollDice(Board *board, Catan *catan)
 {
     if (!isPlayerTurn_)
     {
-        // cout << this->isPlayerTurn_ << endl;
         cerr << "not " << this->name_ << " turn" << endl;
         return;
     }
-
     std::random_device rd;
-
     // Choose a random number between 2 and 12
     std::default_random_engine eng(rd());
     std::uniform_int_distribution<int> distr(2, 12);
     int diceNum = distr(eng);
+    ifPlayerRolled7(catan,diceNum);
+    givePlayersResources(board, diceNum);
+    std::cout << name_ << " rolls the dice: " << diceNum << std::endl;
+}
+void Player::ifPlayerRolled7(Catan* catan,int diceNum){
+    if (diceNum == 7)
+    {
+        for (Player *p : catan->getPlayersList())
+        {
+            int totalResources = p->totalResources();
+            if (totalResources >= 7)
+            {
+                int count = totalResources / 2;       // Number of resources to discard
+                auto &resourceCards = resourceCards_; // Assuming getResourceCards() returns a reference to resourceCards_
+
+                std::vector<ResourceType> resourcesToDiscard;
+                for (const auto &resourcePair : resourceCards)
+                {
+                    for (int i = 0; i < resourcePair.second; ++i)
+                    {
+                        resourcesToDiscard.push_back(resourcePair.first);
+                    }
+                }
+
+                std::random_shuffle(resourcesToDiscard.begin(), resourcesToDiscard.end()); // Randomize the resource order
+
+                // Discard resources
+                for (int i = 0; i < count && !resourcesToDiscard.empty(); ++i)
+                {
+                    ResourceType resourceType = resourcesToDiscard.back();
+                    resourceCards[resourceType]--; // Decrease the resource count
+                    resourcesToDiscard.pop_back(); // Remove from the discard list
+                }
+            }
+        }
+    }
+
+}
+void Player::givePlayersResources(Board *board, int diceNum)
+{
     for (Hexigon *h : board->getHexigonsList())
     {
         if (h->getNumber() == diceNum)
@@ -300,19 +352,18 @@ void Player::rollDice(Board *board)
                 {
                     if (v->getPopulatedEntity() == PopulatedEntity::SETTLEMENT)
                     {
-                        v->getVertexOwner()->addAndSubResource(h->getType(),1);
+                        v->getVertexOwner()->addAndSubResource(h->getType(), 1);
                     }
-                    else if(v->getPopulatedEntity() == PopulatedEntity::CITY){
-                         v->getVertexOwner()->addAndSubResource(h->getType(),2);
+                    else if (v->getPopulatedEntity() == PopulatedEntity::CITY)
+                    {
+                        v->getVertexOwner()->addAndSubResource(h->getType(), 2);
                     }
                 }
             }
         }
     }
-
-    std::cout << name_ << " rolls the dice: " << diceNum << std::endl;
 }
-void Player::rollDice(Board *board,int diceNum)
+void Player::rollDice(Board *board, int diceNum)
 {
     if (!isPlayerTurn_)
     {
@@ -333,10 +384,11 @@ void Player::rollDice(Board *board,int diceNum)
                 {
                     if (v->getPopulatedEntity() == PopulatedEntity::SETTLEMENT)
                     {
-                        v->getVertexOwner()->addAndSubResource(h->getType(),1);
+                        v->getVertexOwner()->addAndSubResource(h->getType(), 1);
                     }
-                    else if(v->getPopulatedEntity() == PopulatedEntity::CITY){
-                         v->getVertexOwner()->addAndSubResource(h->getType(),2);
+                    else if (v->getPopulatedEntity() == PopulatedEntity::CITY)
+                    {
+                        v->getVertexOwner()->addAndSubResource(h->getType(), 2);
                     }
                 }
             }
@@ -345,16 +397,22 @@ void Player::rollDice(Board *board,int diceNum)
 
     std::cout << name_ << " rolls the dice: " << diceNum << std::endl;
 }
-void Player::deductResources(const std::vector<std::pair<ResourceType, int>>& resources) {
-    for (auto& resource : resources) {
-        addAndSubResource(resource.first, -resource.second);
+void Player::addAndSubMultyResources(const std::vector<std::pair<ResourceType, int>> &resources)
+{
+    for (auto &resource : resources)
+    {
+        addAndSubResource(resource.first, resource.second);
     }
 }
 
-void Player::endTurn(Catan* catan)
+void Player::endTurn(Catan *catan)
 {
     catan->endTurn();
-    cout<<name_<<" end his turn"<<endl;
+    cout << name_ << " end his turn" << endl;
+    if (this->points_ == 10)
+    {
+        cout << this->name_ << " has 10 and wins the game!!!!" << endl;
+    }
 }
 void Player::placeCity(std::vector<ResourceType> resourseTypes, std::vector<int> itemNum, Board *board)
 {

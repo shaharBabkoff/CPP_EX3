@@ -51,34 +51,35 @@ int main()
   //Amit.placeRoad({ResourceType::WOOL, ResourceType::BRICK}, {2, 6}, board); // probbably not enoghth resources
   Amit.endTurn(&catan);
 
-  Yossi.rollDice(board);
+  Yossi.rollDice(board,&catan);
   Yossi.placeRoad({ResourceType::LUMBER, ResourceType::NONE}, {11, 0}, board);
   Yossi.endTurn(&catan);
 
-  Dana.rollDice(board);
+  Dana.rollDice(board,&catan);
   Dana.placeRoad({ResourceType::WOOL, ResourceType::LUMBER}, {4, 3}, board);
   Dana.endTurn(&catan);
 
-  Amit.rollDice(board);
+  Amit.rollDice(board,&catan);
   Amit.endTurn(&catan);
 
-  Yossi.rollDice(board);
+  Yossi.rollDice(board,&catan);
   Yossi.endTurn(&catan);
 
-  Dana.rollDice(board);
+  Dana.rollDice(board,&catan);
   Dana.endTurn(&catan);
   Amit.addAndSubResource(ResourceType::GRAIN, 2);
 
   Amit.addAndSubResource(ResourceType::ORE, 3);
 
   Amit.placeCity({ResourceType::ORE, ResourceType::BRICK, ResourceType::GRAIN}, {10, 6, 12}, board);
-  cout << "player 1 has " << Amit.getPlayerPoints() << " points" << endl;
-  cout << "player 2 has " << Amit.getPlayerPoints() << " points" << endl;
-  cout << "player 3 has " << Amit.getPlayerPoints() << " points" << endl;
-  catan.printPlayersStatus();
-  catan.printWinner();                                                // Should print None because no player reached 10 points.
-  // std::unique_ptr<DevelopmentCard> &c1 = board.getDevelopmentCard(0); // knight card
-  // c1->activate(&Amit);
-  // RoadBuildingCard card;
-  // card.activate(&board);
+  // cout << "player 1 has " << Amit.getPlayerPoints() << " points" << endl;
+  // cout << "player 2 has " << Amit.getPlayerPoints() << " points" << endl;
+  // cout << "player 3 has " << Amit.getPlayerPoints() << " points" << endl;
+  //catan.printPlayersStatus();         
+  // DevelopmentCard *a = catan.getDevelopmentCards()[0];                                      // Should print None because no player reached 10 points.
+  catan.getDevelopmentCard(CardType::KNIGHT)->activate(&Amit);
+  cout<<"Amit has "<<Amit.getKnightCardsNum()<< " knight cards"<<endl;
+  Amit.endTurn(&catan);
+
+
 }

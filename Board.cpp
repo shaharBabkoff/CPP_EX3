@@ -1,13 +1,20 @@
 #include "Board.hpp"
 #include <iostream>
-//#include "DevelopmentCard.hpp"
-
+using namespace std;
+// #include "DevelopmentCard.hpp"
+vector<Hexigon *> Board::getHexigonsList()
+{
+    return hexigons_;
+}
+vector<Vertex *> Board::getVerticesList()
+{
+    return vertices_;
+}
 Board::Board() : vertices_(54, nullptr) // Initialize with 72 null pointers
 {
     initializeVertices();
     initializHexigons();
- //initializeDevelopmentCards();
-
+   // initializeDevelopmentCards();
 }
 // void Board::shuffleCards() {
 //     std::shuffle(developmentCards_.begin(), developmentCards_.end(), rng);
@@ -22,20 +29,11 @@ Board::Board() : vertices_(54, nullptr) // Initialize with 72 null pointers
 //     size_t index = dist(rng);
 //     return developmentCards_[index].get();  // Return pointer to the card
 // }
-// void Board::initializeDevelopmentCards() {
-//     // Create 3 Knight cards
-//     for (int i = 0; i < 3; ++i) {
-//         developmentCards_.push_back(std::make_unique<KnightCard>());
-//     }
-
-//     // Create 4 of each of the other types of cards
-//     for (int i = 0; i < 4; ++i) {
-//         developmentCards_.push_back(std::make_unique<RoadBuildingCard>());
-//         developmentCards_.push_back(std::make_unique<VictoryCard>());
-//         developmentCards_.push_back(std::make_unique<MonopolyCard>());
-//         developmentCards_.push_back(std::make_unique<YearOfPlenty>());
-//         // Add other cards similarly
-//     }
+// void Board::initializeDevelopmentCards()
+// {
+//     yopc_.push_back(new YearOfPlenty()); // Default constructor or provide parameters if needed
+//     yopc_.push_back(new YearOfPlenty()); // Assume YearOfPlenty has appropriate constructors
+//     yopc_.push_back(new YearOfPlenty());
 // }
 void Board::initializeVertices()
 {
@@ -142,4 +140,8 @@ Board::~Board()
     {
         delete vert;
     }
+    // for (auto card : yopc_) {
+    //     delete card;
+    // }
+    // yopc_.clear();
 }

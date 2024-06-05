@@ -3,40 +3,49 @@ DevelopmentCard::~DevelopmentCard()
 {
     // Empty implementation
 }
-void RoadBuildingCard::activate(Player *player)
+bool DevelopmentCard::getIfIsUsed()
 {
+    return isUsed_;
+}
+void DevelopmentCard::activateFirstCheck(Player *player)
+{
+    if (!player->isPlayerTurn())
+    {
+        std::cerr << "not " << player->getPlayerName() << " turn..." << std::endl;
+        return;
+    }
+    if (this->isUsed_)
+    {
+        std::cerr << "card was already in use..." << std::endl;
+        return;
+    }
     if (!player->hasRequiredResources({ResourceType::ORE, ResourceType::GRAIN, ResourceType::WOOL}))
     {
         std::cerr << "Player does not have the right resources" << std::endl;
         return;
     }
-    player->addAndSubResource(ResourceType::BRICK, 2);
-    player->addAndSubResource(ResourceType::LUMBER, 2);
-    player->placeRoad({resourseTypes_[0], resourseTypes_[1]}, {itemNum_[0], itemNum_[1]}, board_);
-    player->placeRoad({resourseTypes_[2], resourseTypes_[3]}, {itemNum_[2], itemNum_[3]}, board_);
-    player->deductResources({{ResourceType::ORE, 1}, {ResourceType::GRAIN, 1}, {ResourceType::WOOL, 1}});
 }
-void RoadBuildingCard::set2roads(std::vector<ResourceType> resourseTypes, std::vector<int> itemNum, Board *board)
+void DevelopmentCard::activateEnd(Player *player)
 {
-    resourseTypes_ = resourseTypes;
-    itemNum_ = itemNum;
-    board_ = board;
+    player->addAndSubMultyResources({{ResourceType::ORE, -1}, {ResourceType::GRAIN, -1}, {ResourceType::WOOL, -1}});
+    this->isUsed_ = true;
+}
+void RoadBuildingCard::activate(Player *player)
+{
+    activateFirstCheck(player);
+    player->addAndSubMultyResources({{ResourceType::BRICK, 2}, {ResourceType::LUMBER, 2}});
 }
 
 void KnightCard ::activate(Player *player)
 {
-    if (!player->hasRequiredResources({ResourceType::ORE, ResourceType::GRAIN, ResourceType::WOOL}))
-    {
-        std::cerr << "Player does not have the right resources" << std::endl;
-        return;
-    }
+    activateFirstCheck(player);
     if (player->getKnightCardsNum() == 3)
     {
         std::cerr << "too much knight cards..." << std::endl;
         return;
     }
     player->addKnightCard();
-    player->deductResources({{ResourceType::ORE, 1}, {ResourceType::GRAIN, 1}, {ResourceType::WOOL, 1}});
+    activateEnd(player);
 
     if (player->getKnightCardsNum() == 3)
     {
@@ -46,50 +55,52 @@ void KnightCard ::activate(Player *player)
 
 void VictoryCard ::activate(Player *player)
 {
-    if (!player->hasRequiredResources({ResourceType::ORE, ResourceType::GRAIN, ResourceType::WOOL}))
-    {
-        std::cerr << "Player does not have the right resources" << std::endl;
-        return;
-    }
+    activateFirstCheck(player);
     player->addPoint(1);
-    player->deductResources({{ResourceType::ORE, 1}, {ResourceType::GRAIN, 1}, {ResourceType::WOOL, 1}});
+    activateEnd(player);
 }
-
+MonopolyCard::MonopolyCard(std::vector<Player *> playersList)
+{
+    playersList_ = playersList;
+}
 void MonopolyCard ::activate(Player *player)
 {
-    if (!player->hasRequiredResources({ResourceType::ORE, ResourceType::GRAIN, ResourceType::WOOL}))
+    if (resource_ == ResourceType::NONE)
     {
-        std::cerr << "Player does not have the right resources" << std::endl;
+        std::cerr << "you need first to set your source..." << std::endl;
         return;
     }
-    for (Player *p : catan_->getPlayersList())
+
+    activateFirstCheck(player);
+    for (Player *p : playersList_)
     {
 
         int numOfResorce = p->getResorceCount(resource_);
         p->addAndSubResource(resource_, -numOfResorce);
         player->addAndSubResource(resource_, numOfResorce);
-        player->deductResources({{ResourceType::ORE, 1}, {ResourceType::GRAIN, 1}, {ResourceType::WOOL, 1}});
+        activateEnd(player);
     }
 }
-void MonopolyCard::setResource(ResourceType resource, Catan *catan)
+void MonopolyCard::setResource(ResourceType resource)
 {
     resource_ = resource;
-    catan_ = catan;
 }
 
 void YearOfPlenty ::activate(Player *player)
 {
-    if (!player->hasRequiredResources({ResourceType::ORE, ResourceType::GRAIN, ResourceType::WOOL}))
+    if (resource1_ == ResourceType::NONE || resource2_ == ResourceType::NONE)
     {
-        std::cerr << "Player does not have the right resources" << std::endl;
+        std::cerr << "you need first to set your sources..." << std::endl;
         return;
     }
+    activateFirstCheck(player);
     player->addAndSubResource(resource1_, 1);
     player->addAndSubResource(resource2_, 1);
-    player->deductResources({{ResourceType::ORE, 1}, {ResourceType::GRAIN, 1}, {ResourceType::WOOL, 1}});
+    activateEnd(player);
 }
 void YearOfPlenty::setResources(ResourceType resource1, ResourceType resource2)
 {
     resource1_ = resource1;
     resource2_ = resource2;
 }
+

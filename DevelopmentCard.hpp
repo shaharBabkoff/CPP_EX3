@@ -2,29 +2,22 @@
 #define DEVELOPMENT_CARD_HPP
 #include <vector>
 #include "Hexigon.hpp"
-#include "Catan.hpp"
-class Board; // Forward declaration instead of #include "Board.hpp"
-//enum class ResourceType;
 class Player; // Forward declaration
-class Catan;
 
 class DevelopmentCard
 {
+
 public:
-    virtual void activate(Player *player)= 0;;
+    bool isUsed_;
+    virtual void activate(Player *player) = 0;
     virtual ~DevelopmentCard();
+    bool getIfIsUsed();
+    void activateFirstCheck(Player *player);
+    void activateEnd(Player* player);
 };
 
 class RoadBuildingCard : public DevelopmentCard
 {
-private:
-    std::vector<ResourceType> resourseTypes_;
-    std::vector<int> itemNum_;
-    Board *board_;
-
-public:
-    RoadBuildingCard();
-    void set2roads(std::vector<ResourceType> resourseTypes, std::vector<int> itemNum, Board *board);
     void activate(Player *player) override;
 };
 
@@ -41,21 +34,22 @@ public:
 class MonopolyCard : public DevelopmentCard
 {
 private:
-    ResourceType resource_;
-    Catan *catan_;
+    ResourceType resource_ = ResourceType::NONE;
+    std::vector<Player *> playersList_;
 
 public:
-    void setResource(ResourceType resource, Catan *catan);
+    MonopolyCard(std::vector<Player *> playersList);
+    void setResource(ResourceType resource);
     void activate(Player *player) override;
 };
 class YearOfPlenty : public DevelopmentCard
 {
 private:
-    ResourceType resource1_;
-    ResourceType resource2_;
+    ResourceType resource1_ = ResourceType::NONE;
+    ResourceType resource2_ = ResourceType::NONE;
 
 public:
-    void setResources(ResourceType resource1, ResourceType resource2);
     void activate(Player *player) override;
+    void setResources(ResourceType resource1, ResourceType resource2);
 };
 #endif // DEVELOPMENT_CARD_HPP

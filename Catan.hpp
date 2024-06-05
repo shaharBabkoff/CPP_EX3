@@ -1,43 +1,46 @@
 #ifndef CATAN_HPP
 #define CATAN_HPP
-
-  // Included here because Catan.cpp will likely need complete types
+#include <memory>
+#include <unordered_map>
+#include <string>
 #include "Player.hpp"
 #include "Board.hpp"
-//class Board;
+#include "DevelopmentCard.hpp"
+// class Board;
+#include <unordered_map>
+#include <string>
+
+enum CardType
+{
+    KNIGHT,
+    VICTORY,
+    MONOPOLY,
+    YEAR_OF_PLENTY,
+    ROADS,
+    UNKNOWN
+};
 
 class Catan
 {
 private:
-    Board* board_;
+    Board *board_;
     std::vector<Player *> playersList_;
     int currentPlayerIndex_ = 1;
+    std::vector<DevelopmentCard *> developmentCards_;
 
 public:
-    Catan(Player *p1, Player *p2, Player *p3)
-    {
-        playersList_.push_back(p1);
-        playersList_.push_back(p2);
-        playersList_.push_back(p3);
-        board_ = new Board();
-    }
-    ~Catan(){}
-
+    Catan(Player *p1, Player *p2, Player *p3);
+    ~Catan();
     void ChooseStartingPlayer();
     Board *getBoard();
-    std::vector<Player *> getPlayersList()
-    {
-        return playersList_;
-    }
-    int getCurrentPlayerIndex(){
-        return currentPlayerIndex_;
-    }
-    void setCurrentIndex(int index){
-        currentPlayerIndex_=index;
-    }
+    std::vector<Player *> getPlayersList();
+    int getCurrentPlayerIndex();
+    DevelopmentCard *getDevelopmentCard(CardType type);
+    void setCurrentIndex(int index);
     void printWinner();
     void printPlayersStatus();
     void endTurn();
+    void initialDevelopmentCards();
 };
 
 #endif // CATAN_HPP
