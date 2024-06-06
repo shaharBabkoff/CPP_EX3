@@ -35,7 +35,7 @@ public:
     Board *getBoard();
     std::vector<Player *> getPlayersList();
     int getCurrentPlayerIndex();
-    DevelopmentCard *getDevelopmentCard(CardType type);
+    auto getDevelopmentCard(CardType type) -> DevelopmentCard *;
     void setCurrentIndex(int index);
     void printWinner();
     void printPlayersStatus();

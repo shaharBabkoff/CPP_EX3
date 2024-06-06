@@ -99,7 +99,7 @@ void Catan::initialDevelopmentCards()
         developmentCards_.push_back(new RoadBuildingCard());
     }
 }
-  DevelopmentCard* Catan:: getDevelopmentCard(CardType type) {
+  auto Catan::getDevelopmentCard(CardType type) -> DevelopmentCard* {
     int startIndex = 0, endIndex = 0;
 
      switch (type) {

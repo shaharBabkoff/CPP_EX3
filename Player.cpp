@@ -302,44 +302,51 @@ void Player::rollDice(Board *board, Catan *catan)
     std::default_random_engine eng(rd());
     std::uniform_int_distribution<int> distr(2, 12);
     int diceNum = distr(eng);
-    ifPlayerRolled7(catan,diceNum);
+    PlayerRolled7(catan, diceNum);
     givePlayersResources(board, diceNum);
     std::cout << name_ << " rolls the dice: " << diceNum << std::endl;
 }
-void Player::ifPlayerRolled7(Catan* catan,int diceNum){
+void Player::rollDice(Board *board, Catan *catan, int diceNum)
+{
+    if (!isPlayerTurn_)
+    {
+        cerr << "not " << this->name_ << " turn" << endl;
+        return;
+    }
     if (diceNum == 7)
     {
-        for (Player *p : catan->getPlayersList())
-        {
-            int totalResources = p->totalResources();
-            if (totalResources >= 7)
-            {
-                int count = totalResources / 2;       // Number of resources to discard
-                auto &resourceCards = resourceCards_; // Assuming getResourceCards() returns a reference to resourceCards_
+        cout<<name_<<" rolled 7"<<endl;
+        PlayerRolled7(catan, diceNum);
+        return;
+    }
 
-                std::vector<ResourceType> resourcesToDiscard;
-                for (const auto &resourcePair : resourceCards)
-                {
-                    for (int i = 0; i < resourcePair.second; ++i)
-                    {
-                        resourcesToDiscard.push_back(resourcePair.first);
-                    }
+    givePlayersResources(board, diceNum);
+    std::cout << name_ << " rolls the dice: " << diceNum << std::endl;
+}
+void Player::PlayerRolled7(Catan *catan, int diceNum)
+{
+
+    for (Player *p : catan->getPlayersList())
+    {
+        int totalResources = p->totalResources();
+        if (totalResources >= 7) {
+            int resourcesToDiscard = totalResources / 2;  // Calculate half the resources
+            // Iterate over resources and try to discard them
+            for (auto& resourcePair : p->getResourcesList()) {
+                while (resourcesToDiscard > 0 && resourcePair.second > 0) {
+                    p->addAndSubResource(resourcePair.first,-1);
+                    resourcePair.second--;  // Decrement the count of the current resource
+                    resourcesToDiscard--;  // Decrement the number of resources still to discard
                 }
-
-                std::random_shuffle(resourcesToDiscard.begin(), resourcesToDiscard.end()); // Randomize the resource order
-
-                // Discard resources
-                for (int i = 0; i < count && !resourcesToDiscard.empty(); ++i)
-                {
-                    ResourceType resourceType = resourcesToDiscard.back();
-                    resourceCards[resourceType]--; // Decrease the resource count
-                    resourcesToDiscard.pop_back(); // Remove from the discard list
+                if (resourcesToDiscard <= 0) {
+                    break;  // Exit if we have discarded enough resources
                 }
             }
         }
+    
     }
-
 }
+
 void Player::givePlayersResources(Board *board, int diceNum)
 {
     for (Hexigon *h : board->getHexigonsList())
@@ -361,47 +368,6 @@ void Player::givePlayersResources(Board *board, int diceNum)
                 }
             }
         }
-    }
-}
-void Player::rollDice(Board *board, int diceNum)
-{
-    if (!isPlayerTurn_)
-    {
-        // cout << this->isPlayerTurn_ << endl;
-        cerr << "not " << this->name_ << " turn" << endl;
-        return;
-    }
-
-    // Choose a random number between 2 and 12
-
-    for (Hexigon *h : board->getHexigonsList())
-    {
-        if (h->getNumber() == diceNum)
-        {
-            for (Vertex *v : h->getVerticesList())
-            {
-                if (v->getVertexOwner() != NULL)
-                {
-                    if (v->getPopulatedEntity() == PopulatedEntity::SETTLEMENT)
-                    {
-                        v->getVertexOwner()->addAndSubResource(h->getType(), 1);
-                    }
-                    else if (v->getPopulatedEntity() == PopulatedEntity::CITY)
-                    {
-                        v->getVertexOwner()->addAndSubResource(h->getType(), 2);
-                    }
-                }
-            }
-        }
-    }
-
-    std::cout << name_ << " rolls the dice: " << diceNum << std::endl;
-}
-void Player::addAndSubMultyResources(const std::vector<std::pair<ResourceType, int>> &resources)
-{
-    for (auto &resource : resources)
-    {
-        addAndSubResource(resource.first, resource.second);
     }
 }
 
@@ -463,9 +429,17 @@ void Player::placeCity(std::vector<ResourceType> resourseTypes, std::vector<int>
     cout << "city placed at vertex: " << mutualVertex->getId() << endl;
 }
 
-void Player::trade(Player &other, const std::string &give, const std::string &receive, int giveAmount, int receiveAmount)
+void Player::trade(Player &other, ResourceType give, ResourceType recieve, int giveAmount, int receiveAmount)
 {
-    std::cout << name_ << " trades " << giveAmount << " " << give << " with " << other.getPlayerName() << " for " << receiveAmount << " " << receive << "." << std::endl;
+    if (this->resourceCards_[give] < giveAmount || other.getResourcesList()[recieve] < receiveAmount)
+    {
+        cout << "one of the players dont have the wanted resource" << endl;
+        return;
+    }
+    this->addAndSubResource(recieve, receiveAmount);
+    this->addAndSubResource(give, -giveAmount);
+    other.addAndSubResource(give, giveAmount);
+    other.addAndSubResource(recieve, -receiveAmount);
 }
 
 void Player::buyDevelopmentCard()
@@ -476,4 +450,21 @@ void Player::buyDevelopmentCard()
 void Player::printPoints()
 {
     std::cout << name_ << " has X points." << std::endl; // Replace X with actual point calculation
+}
+void Player::addAndSubMultyResources(const std::vector<std::pair<ResourceType, int>> &resources)
+{
+    for (auto &resource : resources)
+    {
+        addAndSubResource(resource.first, resource.second);
+    }
+}
+void Player::printPlayerStatus()
+{
+    cout << "resources: " << "brick: " << this->getResorceCount(ResourceType::BRICK);
+    cout << " ore: " << this->getResorceCount(ResourceType::ORE);
+    cout << " lumber: " << this->getResorceCount(ResourceType::LUMBER);
+    cout << " grain: " << this->getResorceCount(ResourceType::GRAIN);
+    cout << " wool: " << this->getResorceCount(ResourceType::WOOL);
+    cout << " knight cards: " << knightCards_ << endl;
+    cout << "city: " << this->cityCount() << " settelment: " << this->SettlmenCount() << " road: " << this->roadCount() << endl;
 }

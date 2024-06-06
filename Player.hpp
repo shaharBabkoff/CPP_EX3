@@ -6,10 +6,10 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-
+#include "Vertex.hpp"
 // #include
 class Edge;
-class Vertex;
+
 class Board;
 enum class ResourceType; // Forward declaration
 class Catan;
@@ -60,6 +60,9 @@ public:
   void addKnightCard(){
     knightCards_++;
   }
+  std::map<ResourceType, int>  getResourcesList(){
+    return resourceCards_;
+  }
   void givePlayersResources(Board *board, int diceNum);
   void addAndSubMultyResources(const std::vector<std::pair<ResourceType, int>> &resources);
   void placeSettelemnt(std::vector<ResourceType> resourseTypes, std::vector<int> itemNum, Board *board);
@@ -70,14 +73,37 @@ public:
   }
   void placeRoad(std::vector<ResourceType> resourseTypes, std::vector<int> itemNum, Board *board);
   void rollDice(Board *board,Catan *catan);
-  void rollDice(Board *board, int num);
-  void ifPlayerRolled7(Catan* catan,int diceNum);
+  void rollDice(Board *board, Catan *catan, int diceNum);
+  void PlayerRolled7(Catan* catan,int diceNum);
   void endTurn(Catan *catan);
-  void trade(Player &other, const std::string &give, const std::string &receive, int giveAmount, int receiveAmount);
+  void trade(Player &other, ResourceType give, ResourceType recieve, int giveAmount, int receiveAmount);
   void buyDevelopmentCard();
   void printPoints();
+  void printPlayerStatus();
   bool has2roads(Vertex *v);
   bool isPlayerTurn() const { return isPlayerTurn_; }
+  int SettlmenCount(){
+    int ans =0;
+    for(Vertex* v:verticesList_){
+      if(v->getPopulatedEntity()==PopulatedEntity::SETTLEMENT){
+        ans++;
+      }
+    }
+    return ans;
+  }
+  int cityCount(){
+    int ans =0;
+    for(Vertex* v:verticesList_){
+      if(v->getPopulatedEntity()==PopulatedEntity::CITY){
+        ans++;
+      }
+    }
+    return ans;
+  }
+  int roadCount(){
+    return edgesList_.size();
+  }
+  
 };
 
 #endif // PLAYER_HPP
