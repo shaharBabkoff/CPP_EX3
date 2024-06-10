@@ -1,4 +1,4 @@
-# Project Description
+# exe 3 descreption
 
 ## Game Rules
 This project implements a computerized version of the board game catcn. The game includes 3 players, the winner is the first to get 10 points. The game progresses in turns, where each player roll dice and can perform actions like building(roads, settlements, citys) buying development cards and trade.
