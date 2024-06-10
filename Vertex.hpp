@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 
-class Player; // Forward declaration
+class Player;  // Forward declaration
 class Hexigon; // Forward declaration
 
 enum class PopulatedEntity
@@ -19,23 +19,19 @@ class Vertex
 private:
     int id_;
     Player *vertexOwner_;
-    PopulatedEntity populatedEntity_ ;
-    std::vector<Hexigon*> surroundedHexigons_;
+    PopulatedEntity populatedEntity_;
+    std::vector<Hexigon *> surroundedHexigons_;
 
 public:
-    Vertex(int id) : id_(id), vertexOwner_(nullptr), populatedEntity_(PopulatedEntity::NONE) {}
-    ~Vertex(){}
-    void addNeighbor(Hexigon* h) {
-        surroundedHexigons_.push_back(h);
-    }
-    
-    int getId() const { return id_; }
-    Player* getVertexOwner() const { return vertexOwner_; }
-    PopulatedEntity getPopulatedEntity() const { return populatedEntity_; }
-    const std::vector<Hexigon*>& getSurroundedHexigons() const { return surroundedHexigons_; }
-
-    void setVertexOwner(Player* owner) { vertexOwner_ = owner; }
-    void setPopulatedEntity(PopulatedEntity entity) { populatedEntity_ = entity; }
+    Vertex(int id);
+    ~Vertex();
+    void addNeighbor(Hexigon *h);
+    int getId() const;
+    Player *getVertexOwner() const;
+    PopulatedEntity getPopulatedEntity() const;
+    const std::vector<Hexigon *> &getSurroundedHexigons() const;
+    void setVertexOwner(Player *owner);
+    void setPopulatedEntity(PopulatedEntity entity);
 };
 
 #endif // VERTEX_HPP

@@ -5,17 +5,7 @@
 #include <iostream>
 #include "Vertex.hpp"
 #include "Edge.hpp"
-
-enum class ResourceType
-{
-    LUMBER,
-    BRICK,
-    WOOL,
-    GRAIN,
-    ORE,
-    NONE,
-    SEA
-};
+#include "ResourceTypes.hpp"
 
 class Hexigon
 {

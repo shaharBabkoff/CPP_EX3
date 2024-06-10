@@ -1,30 +1,32 @@
 #ifndef DEVELOPMENT_CARD_HPP
 #define DEVELOPMENT_CARD_HPP
 #include <vector>
-#include "Hexigon.hpp"
-class Player; // Forward declaration
-
+#include "ResourceTypes.hpp"
+#include "CardType.hpp"
+#include "Player.hpp"
 class DevelopmentCard
 {
 
 public:
-    bool isUsed_;
+    bool isBought_ = false;
+    void setAsBought(bool val);
     virtual void activate(Player *player) = 0;
     virtual ~DevelopmentCard();
-    bool getIfIsUsed();
+    bool getIfBought() const;
     void activateFirstCheck(Player *player);
-    void activateEnd(Player* player);
+    void activateEnd(Player *player);
 };
 
 class RoadBuildingCard : public DevelopmentCard
 {
+public:
     void activate(Player *player) override;
 };
 
 class KnightCard : public DevelopmentCard
 {
 public:
-    void activate(Player *player) override;
+    void activate(Player *player) override{}
 };
 class VictoryCard : public DevelopmentCard
 {

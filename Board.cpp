@@ -1,52 +1,40 @@
 #include "Board.hpp"
 #include <iostream>
 using namespace std;
-// #include "DevelopmentCard.hpp"
-vector<Hexigon *> Board::getHexigonsList()
+// Retrieves the list of hexagons on the board.
+vector<Hexigon *> Board::getHexigonsList() const
 {
     return hexigons_;
 }
-vector<Vertex *> Board::getVerticesList()
+
+// Retrieves the list of vertices on the board.
+vector<Vertex *> Board::getVerticesList() const
 {
     return vertices_;
 }
-Board::Board() : vertices_(54, nullptr) // Initialize with 72 null pointers
+
+// Constructor: Initializes the board with vertices and hexigons.
+Board::Board() : vertices_(54, nullptr) // Initialize with 54 null pointers
 {
-    initializeVertices();
-    initializHexigons();
-   // initializeDevelopmentCards();
+    initializeVertices(); // Initialize vertex objects for the board
+    initializHexigons();  // Initialize hexigon objects for the board
 }
-// void Board::shuffleCards() {
-//     std::shuffle(developmentCards_.begin(), developmentCards_.end(), rng);
-// }
-// DevelopmentCard* Board::getRandomCard() {
-//     if (developmentCards_.empty()) {
-//         std::cerr << "No cards available." << std::endl;
-//         return nullptr;
-//     }
-//     // Generate a random index to select a card
-//     std::uniform_int_distribution<size_t> dist(0, developmentCards_.size() - 1);
-//     size_t index = dist(rng);
-//     return developmentCards_[index].get();  // Return pointer to the card
-// }
-// void Board::initializeDevelopmentCards()
-// {
-//     yopc_.push_back(new YearOfPlenty()); // Default constructor or provide parameters if needed
-//     yopc_.push_back(new YearOfPlenty()); // Assume YearOfPlenty has appropriate constructors
-//     yopc_.push_back(new YearOfPlenty());
-// }
+
+// Initializes vertices with new Vertex instances.
 void Board::initializeVertices()
 {
     for (int i = 0; i < 54; i++)
     {
-        vertices_[i] = new Vertex(i);
+        vertices_[i] = new Vertex(i); // Create a new vertex with an index
     }
-
-    // updateVertexNeighbers();
 }
 
+// Initializes hexigons with predefined configurations.
 void Board::initializHexigons()
 {
+    // Each hexigon is created with a resource type and a list of adjacent vertex indices.
+    // Resource type and vertex indices are passed to the Hexigon constructor.
+    // Example: hexigons_.push_back(new Hexigon(resource value, ResourceType, vector of connecting vertex indices, reference to vertices));
     hexigons_.push_back(new Hexigon(10, ResourceType::ORE, {0, 1, 9, 8, 7, 5}, &vertices_));
     hexigons_.push_back(new Hexigon(2, ResourceType::WOOL, {2, 3, 11, 10, 9, 1}, &vertices_));
     hexigons_.push_back(new Hexigon(9, ResourceType::LUMBER, {4, 6, 13, 12, 11, 3}, &vertices_));
@@ -85,9 +73,9 @@ void Board::initializHexigons()
     hexigons_.push_back(new Hexigon(17, ResourceType::SEA, {25, 16, 14}, &vertices_));
     hexigons_.push_back(new Hexigon(18, ResourceType::SEA, {14, 7, 5}, &vertices_));
 }
+// Prints the board layout with hexigon details and their vertices.
 void Board::printBoard()
 {
-
     std::cout << "Board Layout:" << std::endl;
     for (const Hexigon *hex : hexigons_)
     {
@@ -117,6 +105,7 @@ void Board::printBoard()
             break;
         default:
             std::cout << "UNKNOWN";
+            break;
         }
         std::cout << std::endl;
 
@@ -129,19 +118,16 @@ void Board::printBoard()
     }
 }
 
-Board::~Board()
-{
-    // Clean up dynamically allocated memory
-    for (auto hex : hexigons_)
-    {
-        delete hex;
+// Destructor: Cleans up dynamically allocated memory for hexigons and vertices.
+
+Board::~Board() {
+    for (auto hex : hexigons_) {
+        delete hex;  // Correctly delete each dynamically allocated Hexigon
     }
-    for (auto vert : vertices_)
-    {
-        delete vert;
+    hexigons_.clear();  // Clear the container after deleting all elements
+
+    for (auto vert : vertices_) {
+        delete vert;  // Correctly delete each dynamically allocated Vertex
     }
-    // for (auto card : yopc_) {
-    //     delete card;
-    // }
-    // yopc_.clear();
+    vertices_.clear();  // Clear the container after deleting all elements
 }

@@ -6,24 +6,17 @@
 #include "Player.hpp"
 #include "Board.hpp"
 #include "DevelopmentCard.hpp"
+#include "CardType.hpp"
 // class Board;
 #include <unordered_map>
 #include <string>
 
-enum CardType
-{
-    KNIGHT,
-    VICTORY,
-    MONOPOLY,
-    YEAR_OF_PLENTY,
-    ROADS,
-    UNKNOWN
-};
+
 
 class Catan
 {
 private:
-    Board *board_;
+    Board board_;
     std::vector<Player *> playersList_;
     int currentPlayerIndex_ = 1;
     std::vector<DevelopmentCard *> developmentCards_;
@@ -31,16 +24,16 @@ private:
 public:
     Catan(Player *p1, Player *p2, Player *p3);
     ~Catan();
-    void ChooseStartingPlayer();
-    Board *getBoard();
-    std::vector<Player *> getPlayersList();
-    int getCurrentPlayerIndex();
-    auto getDevelopmentCard(CardType type) -> DevelopmentCard *;
+     Board&  getBoard();
+    std::vector<Player *> getPlayersList() const;
+    int getCurrentPlayerIndex() const;
+    DevelopmentCard* getDevelopmentCard(CardType type, Player &player) const;
     void setCurrentIndex(int index);
-    void printWinner();
+    std::string printWinner();
     void printPlayersStatus();
     void endTurn();
     void initialDevelopmentCards();
+    
 };
 
 #endif // CATAN_HPP
