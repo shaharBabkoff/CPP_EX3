@@ -1,15 +1,20 @@
 # Project Description
 
 ## Game Rules
-This project implements a computerized version of the board game X. The game includes a number of players (specify the number of players), each aiming to achieve goal Y (describe the goal). The game progresses in turns, where each player can perform actions A, B, and C in each turn (detail these actions).
+This project implements a computerized version of the board game catcn. The game includes 3 players, the winner is the first to get 10 points. The game progresses in turns, where each player roll dice and can perform actions like building(roads, settlements, citys) buying development cards and trade.
 
 ## Class Hierarchy
 The implementation includes the following classes:
-- `Game`: This class is responsible for running the game, managing turns, and enforcing the rules.
-- `Player`: This class represents a player in the game. It contains all attributes and properties of the player.
-- `Board`: This class represents the game board and interactions on it.
-- `Card`: An abstract class for the cards in the game, with derived classes such as `TreasureCard`, `MonsterCard`, etc.
+- `Board`: This class is responsible for the board structure. In this class all the hexigons and vertices are initialized.
+The board contain 37 hexigons and 54 vertices
+- `Hexigon`: Each hexigon is comprised of 6 vertices and 6 edges. Also he has an id number and a resource type
+ - `Vertex`: Each vertex has a uniqe id, a player who own him and a pupulated entity 
+- `Catan`: This class represents a player in the game. It contains all attributes and properties of the player.
+- `Edge`: This class represents the game board and interactions on it.
 
+
+- `Player` :
+  
 ## Libraries Used
 The project utilizes standard C++ libraries such as `<iostream>`, `<vector>`, `<map>`, and `<algorithm>` for input/output handling, list and map management, and data manipulation.
 
