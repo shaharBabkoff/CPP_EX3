@@ -1,3 +1,4 @@
+//id:324207935 email:shbabkoff123@gmail.com
 #include "Hexigon.hpp"
 using namespace std;
 // Constructor: Initializes a Hexigon with a number, resource type, and associated vertex IDs.

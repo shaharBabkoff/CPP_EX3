@@ -7,7 +7,7 @@ VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all  --error-exitcode=99
 SOURCES=Board.cpp Catan.cpp DevelopmentCard.cpp Edge.cpp Hexigon.cpp Player.cpp Vertex.cpp
 OBJECTS=$(subst .cpp,.o,$(SOURCES))
 
-run: demo
+catan: demo
 	./$^
 
 demo: Demo.o $(OBJECTS)

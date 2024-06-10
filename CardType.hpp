@@ -1,3 +1,4 @@
+//id:324207935 email:shbabkoff123@gmail.com
 #ifndef CARD_TYPES_HPP
 #define CARD_TYPES_HPP
 

@@ -1,3 +1,4 @@
+//id:324207935 email:shbabkoff123@gmail.coms
 #ifndef CATAN_HPP
 #define CATAN_HPP
 #include <memory>
@@ -7,7 +8,6 @@
 #include "Board.hpp"
 #include "DevelopmentCard.hpp"
 #include "CardType.hpp"
-// class Board;
 #include <unordered_map>
 #include <string>
 
