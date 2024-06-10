@@ -7,13 +7,12 @@ This project implements a computerized version of the board game catcn. The game
 The implementation includes the following classes:
 - `Board`: This class is responsible for the board structure. In this class all the hexigons and vertices are initialized.
 The board contain 37 hexigons and 54 vertices
-- `Hexigon`: Each hexigon is comprised of 6 vertices and 6 edges. Also he has an id number and a resource type
- - `Vertex`: Each vertex has a uniqe id, a player who own him and a pupulated entity 
 - `Catan`: This class represents a player in the game. It contains all attributes and properties of the player.
-- `Edge`: This class represents the game board and interactions on it.
-
-
-- `Player` :
+- `Hexigon`: Each hexigon is comprised of 6 vertices and 6 edges. Also he has an id number and a resource type
+ - `Vertex`: Each vertex has a uniqe id, a player who own him and a pupulated entity . in Vertex a player can build settlement/city according to the conditions
+- `Edge`: This class represent an edge in the board where a player can build a roud on.
+Edge is comprised of 2 vertices
+- `Player` :This class represents a player in the game. It contains all attributes and properties of the player.
   
 ## Libraries Used
 The project utilizes standard C++ libraries such as `<iostream>`, `<vector>`, `<map>`, and `<algorithm>` for input/output handling, list and map management, and data manipulation.
