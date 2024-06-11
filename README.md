@@ -68,5 +68,5 @@ In catan i initilze all the development cards: 3 knight and 4 from all the other
 if a player want to get a development card he use getDevelopmentCard function (in catan)
 A card can be traded only if the player hasnt activate it yet.
 Accept knight card which doesnt have activate method
-
+![Catan Board Layout](הורדות/catan.jpg)
 ---
