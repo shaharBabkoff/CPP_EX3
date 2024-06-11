@@ -1,34 +1,72 @@
-# exe 3 descreption
-
+id:324207935
+email: shbabkoff123@gmail.com
+---
+# Catan Game Project
+---
 ## Game Rules
-This project implements a computerized version of the board game catcn. The game includes 3 players, the winner is the first to get 10 points. The game progresses in turns, where each player roll dice and can perform actions like building(roads, settlements, citys) buying development cards and trade.
+This project implements a computerized version of the board game Catan. The game includes 3 players, with the winner being the first to reach 10 points. The game progresses in turns, where each player can roll dice and perform actions such as building (roads, settlements, cities), buying development cards, and trading.
 
 ## Class Hierarchy
 The implementation includes the following classes:
-- `Board`: This class is responsible for the board structure. In this class all the hexigons and vertices are initialized.
-The board contain 37 hexigons and 54 vertices
-- `Catan`: This class represents a player in the game. It contains all attributes and properties of the player.
-- `Hexigon`: Each hexigon is comprised of 6 vertices and 6 edges. Also he has an id number and a resource type
- - `Vertex`: Each vertex has a uniqe id, a player who own him and a pupulated entity . in Vertex a player can build settlement/city according to the conditions
-- `Edge`: This class represent an edge in the board where a player can build a roud on.
-Edge is comprised of 2 vertices
-- `Player` :This class represents a player in the game. It contains all attributes and properties of the player.
-  
-## Libraries Used
-The project utilizes standard C++ libraries such as `<iostream>`, `<vector>`, `<map>`, and `<algorithm>` for input/output handling, list and map management, and data manipulation.
+- **`Board`**: Responsible for the board structure. All hexagons and vertices are initialized in this class. The board contains 37 hexagons and 54 vertices.
+- The board also includes sea hexagons that surround the hexagons with resources. This design requires that each time a player wants to build a city/settlement, they need to enter 3 hexagons, even if the desired vertex is on an edge next to the sea.
+- **`Catan`**: Represents the actual game. Holds the player list and is responsible for tracking the players' turns.
+- **`Hexigon`**: Each hexagon is comprised of 6 vertices and 6 edges. It has an ID number and a resource type.
+- **`Vertex`**: Each vertex has a unique ID, a player who owns it, and a populated entity. Players can build a settlement/city on a vertex according to the conditions.
+- **`Edge`**: Represents an edge on the board where a player can build a road. Each edge is comprised of 2 vertices.
+- **`Player`**: Represents a player in the game. Contains all attributes and properties of the player.
 
-## Methods Implemented
-Below is a description of several key methods in the project:
-- `void Player::move(int x, int y)`: Moves the player to a new position on the game board, specified by coordinates x and y.
-- `void Game::start()`: Initiates a new game session, setting up the board and distributing initial resources or cards to players.
-- `void Board::update()`: Updates the state of the board with each turn, checking for win conditions and updating player positions.
-- `bool Player::checkResources()`: Checks if the player has the necessary resources to perform a particular action.
+## Development Cards
+Development cards provide players with different capabilities or advantages when activated. Each card type inherits from the abstract `DevelopmentCard` class, which provides the base structure and functionality common to all cards.
 
-## Running the Game
-To start the game, compile the source files and run the executable. Ensure that all dependencies are properly configured in your development environment.
+### `DevelopmentCard` (Abstract Base Class)
+- **Attributes**:
+  - `isBought_`: Boolean flag indicating whether the card has been purchased.
+- **Methods**:
+  - `setAsBought(bool val)`: Sets the card as bought.
+  - `activate(Player *player)`: Pure virtual function to activate the card. Specific behavior is implemented in derived classes.
+  - `getIfBought()`: Returns whether the card has been purchased.
+  - `activateFirstCheck(Player *player)`: Performs initial checks before card activation (e.g., if it is the player's turn).
+  - `activateEnd(Player *player)`: Concludes the activation process with cleanup or final steps.
 
-## Contributions
-Feel free to fork this project and contribute to its development. Pull requests are welcome.
+### `RoadBuildingCard`
+- Allows a player to build two roads at no resource cost.
+- **Method**:
+  - `activate(Player *player)`: Activates the card and gives the player 2 lumbers and 2 bricks
 
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+### `KnightCard`
+- Represents a knight which a player that holds 3 knight cards gets 2 points
+- knight card doesnt have activate method so it has an empty implementation for the activate function
+
+### `VictoryCard`
+- Grants an additional victory point to the player.
+- **Method**:
+  - `activate(Player *player)`: Adds a victory point to the player's score.
+
+### `MonopolyCard`
+- Allows a player to declare one resource type and take all of that resource from other players.
+in oreder to activate the card the player needs first to set the wanted resource
+- **Attributes**:
+  - `resource_`: Specifies the resource type to be monopolized.
+  - `playersList_`: List of players in the game to affect.
+- **Methods**:
+  - `setResource(ResourceType resource)`: Sets the resource type for the monopoly.
+  - `activate(Player *player)`: Removes the specified resource from all other players and adds it to the activator’s resources.
+
+### `YearOfPlenty`
+- Allows a player to choose two resources to add to their inventory.
+- in oreder to activate the card the player needs first to set the wanted resourcses
+- **Attributes**:
+  - `resource1_`: The first resource type chosen.
+  - `resource2_`: The second resource type chosen.
+- **Methods**:
+  - `activate(Player *player)`: Adds the chosen resources to the player’s inventory.
+  - `setResources(ResourceType resource1, ResourceType resource2)`: Sets the resources that the player will receive.
+
+## trade development cards
+In catan i initilze all the development cards: 3 knight and 4 from all the other types
+if a player want to get a development card he use getDevelopmentCard function (in catan)
+A card can be traded only if the player hasnt activate it yet.
+Accept knight card which doesnt have activate method
+
+---
