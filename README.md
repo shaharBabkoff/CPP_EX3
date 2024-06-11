@@ -62,9 +62,8 @@ in oreder to activate the card the player needs first to set the wanted resource
 - **Methods**:
   - `activate(Player *player)`: Adds the chosen resources to the player’s inventory.
   - `setResources(ResourceType resource1, ResourceType resource2)`: Sets the resources that the player will receive.
-
-## trade development cards
-In catan i initilze all the development cards: 3 knight and 4 from all the other types
+# trade development cards
+In catan class i initilze all the development cards: 3 knight and 4 from all the other types
 if a player want to get a development card he use getDevelopmentCard function (in catan)
 A card can be traded only if the player hasnt activate it yet.
 Accept knight card which doesnt have activate method
