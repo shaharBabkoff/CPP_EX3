@@ -71,5 +71,5 @@ Accept knight card which doesnt have activate method
 ---
 ### my board:
 ---
-![Catan Board Layout](catan.jpg)
+
 ---
